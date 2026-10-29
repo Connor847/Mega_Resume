@@ -46,7 +46,7 @@ hasn't been edited, lock it with `chmod a-w mega_resume.yaml` and use `--require
 
 ## Quick start (Claude app)
 
-1. **Install the skill.** Download this repo, zip the `skill/mega-res` folder, and upload it as a
+1. **Install the skill.** Download this repo, zip the `mega-res` folder inside it, and upload it as a
    skill in Claude's settings.
 2. **Make a main folder** for your applications:
 
@@ -74,9 +74,9 @@ Claude will:
 ## Quick start (Claude Code)
 
 ```bash
-git clone https://github.com/<you>/mega-res.git
-cp -r mega-res/skill/mega-res ~/.claude/skills/mega-res
-pip install -r mega-res/skill/mega-res/requirements.txt
+git clone https://github.com/Connor847/Mega_Resume.git
+cp -r Mega_Resume/mega-res ~/.claude/skills/mega-res
+pip install -r Mega_Resume/mega-res/requirements.txt
 ```
 
 Install LibreOffice and poppler, which are used to make and read PDFs:
@@ -93,7 +93,7 @@ Then run `claude` from your main folder and paste a job posting.
 ## Using the tool directly (no Claude)
 
 Everything Claude does runs through a command-line tool you can use yourself. Set
-`PYTHONPATH=skill/mega-res` and run:
+`PYTHONPATH=mega-res` from the repo's top folder and run:
 
 ```bash
 # set up a main folder with an example mega resume
@@ -160,7 +160,7 @@ skills:
 
 The example data is Steve Jobs' public career history, used for illustration, with placeholder
 contact details. The full example is at
-[`skill/mega-res/templates/mega_resume.example.yaml`](skill/mega-res/templates/mega_resume.example.yaml).
+[`mega-res/templates/mega_resume.example.yaml`](mega-res/templates/mega_resume.example.yaml).
 
 **Tips**
 - **Put everything in.** The page limit is applied per resume, not to the mega resume, so
@@ -252,8 +252,8 @@ Standard single-column resumes exported from Word, Google Docs, Pages, LaTeX or 
 ## Repository layout
 
 ```
-mega-res/
-├── skill/mega-res/              ← the skill: upload or copy this folder
+Mega_Resume/
+├── mega-res/                    ← the skill: zip/upload or copy this folder
 │   ├── SKILL.md                 ← instructions Claude follows
 │   ├── megares/                 ← the Python tool
 │   │   ├── cli.py               ← init / import / check / build commands
@@ -270,7 +270,7 @@ mega-res/
 ## Development
 
 ```bash
-pip install -r skill/mega-res/requirements.txt pytest
+pip install -r mega-res/requirements.txt pytest
 python3 -m pytest tests
 ```
 

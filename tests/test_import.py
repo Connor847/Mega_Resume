@@ -1,7 +1,7 @@
 import os, shutil, subprocess, sys, pytest, yaml
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SKILL = os.path.join(HERE, "..", "skill", "mega-res")
+SKILL = os.path.join(HERE, "..", "mega-res")
 sys.path.insert(0, SKILL)
 from megares import importer as I
 
