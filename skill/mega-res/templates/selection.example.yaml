@@ -1,9 +1,12 @@
 # Written by Claude (or you) for one job posting. Ids only - no text.
+# This one targets a consumer-hardware product leadership role.
 education:
-  - {id: state-ms, lines: [state-ms-courses]}
+  - {id: reed, lines: [reed-calligraphy]}
 experience:                       # omitted entries are dropped; order bullets by relevance
-  - {id: acme, bullets: [acme-forecast, acme-pipeline, acme-ab]}
-  - {id: lab, bullets: [lab-cv]}
+  - {id: apple-ceo, bullets: [apple-iphone, apple-ipod, apple-imac, apple-turnaround]}
+  - {id: pixar, bullets: [pixar-toy-story, pixar-ipo]}
+  - {id: next, bullets: [next-os]}
+  - {id: apple-founder, bullets: [apple-mac, apple-ii, apple-cofound]}
 projects:
-  - {id: sim, bullets: [sim-model]}
+  - {id: stanford, bullets: [stanford-speech]}
 skills: all                       # or an ordered list of exact skill strings from the master

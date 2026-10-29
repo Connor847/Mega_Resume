@@ -1,7 +1,7 @@
-# Example master resume for a fictional person. Copy this file OUTSIDE the repo
-# (or into my/, which is git-ignored), replace the content with yours, then lock it:
-#   chmod a-w path/to/master.yaml
+# Example mega resume: Steve Jobs, written from his public career history for illustration.
+# Contact details are placeholders.
 #
+# Copy this layout for your own mega resume, or run `megares import your_resume.pdf <folder>`.
 # Rules: every bullet has a unique id and is used verbatim. Tags are optional hints.
 # priority: must  -> the bullet (or entry) is required in every resume.
 
@@ -11,72 +11,117 @@ style:                     # optional; these are the defaults
   page_limit: 1
 
 header:
-  name: Jordan Rivera
+  name: Steve Jobs
   contact:
-    - {text: "(555) 010-0000"}
-    - {text: "jordan@example.com", url: "mailto:jordan@example.com"}
-    - {text: "github.com/jordan-example", url: "https://github.com/jordan-example"}
+    - {text: "Palo Alto, CA"}
+    - {text: "steve@example.com", url: "mailto:steve@example.com"}
+    - {text: "example.com/steve", url: "https://example.com/steve"}
 
 education:
-  - id: state-ms
-    school: State University, Springfield, IL
-    dates: Aug 2023 - May 2025
-    degree: Master of Science in Computer Science
+  - id: reed
+    school: Reed College, Portland, OR
+    dates: 1972 - 1974
+    degree: Attended; audited courses after withdrawing
     lines:
-      - {id: state-ms-courses, text: "Relevant Courses: Machine Learning, Databases, Distributed Systems, Optimization"}
-      - {id: state-ms-ta, text: "Teaching Assistant: Introduction to Data Science"}
+      - {id: reed-calligraphy, text: "Audited calligraphy, an influence on the typography of the original Macintosh"}
 
 experience:
-  - id: acme
-    org: Acme Analytics
-    location: Chicago, IL
-    title: Data Scientist
-    dates: Jun 2025 - Present
+  - id: apple-ceo
+    org: Apple Inc.
+    location: Cupertino, CA
+    title: Chief Executive Officer
+    dates: 1997 - 2011
     priority: must
     bullets:
-      - id: acme-forecast
-        tags: [forecasting, time-series, python]
-        text: "Built a demand forecasting model in Python that reduced weekly inventory error by 18% across 40 stores"
-      - id: acme-pipeline
-        tags: [data-engineering, airflow, sql]
-        text: "Designed an Airflow pipeline ingesting 2M daily transactions into a warehouse with automated data-quality checks"
-      - id: acme-dashboard
-        tags: [communication, stakeholders, visualization]
-        text: "Presented weekly model results to operations leads through a self-serve dashboard used by 30+ managers"
-      - id: acme-ab
-        tags: [experimentation, statistics]
-        text: "Ran A/B tests on pricing changes and reported effect sizes with confidence intervals to leadership"
+      - id: apple-turnaround
+        tags: [turnaround, strategy, leadership]
+        text: "Returned to a struggling Apple and cut the product line down to four core products, restoring the company to profitability"
+      - id: apple-imac
+        tags: [product, design, hardware]
+        text: "Launched the iMac in 1998, the first product of Apple's turnaround and a new direction for consumer computer design"
+      - id: apple-ipod
+        tags: [product, consumer-electronics, music]
+        text: "Introduced the iPod in 2001 and the iTunes Store in 2003, building a legal digital music business with the major record labels"
+      - id: apple-iphone
+        tags: [product, mobile, software]
+        text: "Unveiled the iPhone in 2007, combining a phone, a music player and an internet device in one touchscreen product"
+      - id: apple-app-store
+        tags: [platform, developers, ecosystem]
+        text: "Opened the App Store in 2008, creating a platform for third-party developers to sell iPhone software"
+      - id: apple-ipad
+        tags: [product, tablet]
+        text: "Launched the iPad in 2010, establishing a new category of tablet computing"
+      - id: apple-retail
+        tags: [retail, customer-experience, operations]
+        text: "Opened the first Apple Stores in 2001, giving Apple direct control over how its products were sold and supported"
 
-  - id: lab
-    org: Applied ML Lab, State University
-    location: Springfield, IL
-    title: Graduate Research Assistant
-    dates: Sep 2023 - May 2025
+  - id: pixar
+    org: Pixar Animation Studios
+    location: Emeryville, CA
+    title: Chairman and CEO
+    dates: 1986 - 2006
     bullets:
-      - id: lab-cv
-        tags: [computer-vision, pytorch, research]
-        text: "Trained a PyTorch segmentation model for satellite imagery, improving mean IoU from 0.61 to 0.72"
-      - id: lab-paper
-        tags: [research, publication]
-        text: "Co-authored a workshop paper on label-efficient segmentation"
+      - id: pixar-acquire
+        tags: [investment, entrepreneurship]
+        text: "Acquired the computer graphics division of Lucasfilm and funded it as an independent company"
+      - id: pixar-toy-story
+        tags: [film, computer-graphics, partnerships]
+        text: "Led Pixar through the release of Toy Story in 1995, the first fully computer-animated feature film"
+      - id: pixar-ipo
+        tags: [finance, ipo]
+        text: "Took Pixar public in 1995 and oversaw its acquisition by The Walt Disney Company in 2006"
+
+  - id: next
+    org: NeXT
+    location: Redwood City, CA
+    title: Founder and CEO
+    dates: 1985 - 1997
+    bullets:
+      - id: next-found
+        tags: [entrepreneurship, hardware, education]
+        text: "Founded NeXT to build high-end workstations for higher education and business"
+      - id: next-os
+        tags: [software, operating-systems]
+        text: "Developed the NeXTSTEP operating system, which became the foundation of Apple's later operating systems after Apple acquired NeXT in 1997"
+
+  - id: apple-founder
+    org: Apple Computer
+    location: Cupertino, CA
+    title: Co-founder and Chairman
+    dates: 1976 - 1985
+    bullets:
+      - id: apple-cofound
+        tags: [entrepreneurship, startup]
+        text: "Co-founded Apple Computer with Steve Wozniak in 1976"
+      - id: apple-ii
+        tags: [product, hardware, consumer]
+        text: "Brought the Apple II to market in 1977, one of the first successful mass-produced personal computers"
+      - id: apple-mac
+        tags: [product, design, user-interface]
+        text: "Led the Macintosh team, launching in 1984 one of the first mass-market computers with a graphical user interface and a mouse"
+
+  - id: atari
+    org: Atari
+    location: Los Gatos, CA
+    title: Technician
+    dates: "1974"
+    bullets:
+      - id: atari-games
+        tags: [hardware, engineering]
+        text: "Worked on video game design and production as one of the company's early employees"
 
 projects:
-  - id: chatbot
-    name: Course Q&A Assistant
+  - id: stanford
+    name: Stanford Commencement Address
+    dates: "2005"
     bullets:
-      - id: chatbot-rag
-        tags: [llm, rag]
-        text: "Built a retrieval-augmented chatbot over 300 pages of course notes with citation of source passages"
-  - id: sim
-    name: Traffic Flow Simulator
-    bullets:
-      - id: sim-model
-        tags: [simulation, optimization, numpy]
-        text: "Wrote a NumPy cellular-automaton traffic simulator and tuned signal timing with Bayesian optimization"
+      - id: stanford-speech
+        tags: [communication, public-speaking]
+        text: "Delivered the 2005 commencement address at Stanford University"
 
 skills:
-  - "Python (NumPy, Pandas, PyTorch, Scikit-learn)"
-  - "SQL"
-  - "Airflow"
-  - "AWS"
-  - "Git"
+  - "Product strategy"
+  - "Industrial design direction"
+  - "Product launches and presentations"
+  - "Negotiation"
+  - "Team building"

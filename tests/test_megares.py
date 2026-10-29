@@ -19,21 +19,21 @@ def test_example_master_valid():
 def test_unknown_id_rejected():
     m = M.load(MASTER)
     with pytest.raises(M.MasterError):
-        M.resolve(m, {"experience": [{"id": "acme", "bullets": ["made-up"]}]})
+        M.resolve(m, {"experience": [{"id": "apple-ceo", "bullets": ["made-up"]}]})
 
 def test_must_entry_enforced():
     m = M.load(MASTER)
     with pytest.raises(M.MasterError):
-        M.resolve(m, {"experience": [{"id": "lab", "bullets": ["lab-cv"]}]})
+        M.resolve(m, {"experience": [{"id": "pixar", "bullets": ["pixar-ipo"]}]})
 
 def test_skill_must_match_exactly():
     m = M.load(MASTER)
     with pytest.raises(M.MasterError):
-        M.resolve(m, {"experience": [{"id": "acme", "bullets": ["acme-ab"]}], "skills": ["python"]})
+        M.resolve(m, {"experience": [{"id": "apple-ceo", "bullets": ["apple-ipad"]}], "skills": ["python"]})
 
 def test_duplicate_ids_rejected(tmp_path):
     m = yaml.safe_load(open(MASTER))
-    m["experience"][1]["bullets"][0]["id"] = "acme-forecast"
+    m["experience"][1]["bullets"][0]["id"] = "apple-turnaround"
     p = tmp_path / "m.yaml"; p.write_text(yaml.safe_dump(m))
     with pytest.raises(M.MasterError):
         M.load(str(p))
@@ -45,9 +45,9 @@ def test_build_passes_verbatim_check(tmp_path):
     r = run("build", MASTER, sel, "--outdir", str(out), "--company", "Acme Corp", "--role", "Data Scientist")
     assert "VERBATIM CHECK: PASS" in r.stdout, r.stdout + r.stderr
     assert r.returncode == 0
-    assert sorted(os.listdir(out)) == ["Jordan Rivera_Acme Corp_Data Scientist.pdf"]
+    assert sorted(os.listdir(out)) == ["Steve Jobs_Acme Corp_Data Scientist.pdf"]
     r = run("build", MASTER, sel, "--outdir", str(out), "--company", "Acme Corp", "--role", "Data Scientist")
-    assert "Jordan Rivera_Acme Corp_Data Scientist (2).pdf" in os.listdir(out)
+    assert "Steve Jobs_Acme Corp_Data Scientist (2).pdf" in os.listdir(out)
 
 @pytest.mark.skipif(shutil.which("soffice") is None, reason="LibreOffice not installed")
 def test_preview_does_not_save(tmp_path):

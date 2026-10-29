@@ -18,9 +18,21 @@ def sha256(path):
 def is_read_only(path):
     return not (os.stat(path).st_mode & (stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH))
 
+def _stringify(node):
+    """Turn bare YAML numbers (e.g. `dates: 1974`) into text so they render as written."""
+    if isinstance(node, dict):
+        return {k: (v if k in ("style", "priority") else _stringify(v)) for k, v in node.items()}
+    if isinstance(node, list):
+        return [_stringify(v) for v in node]
+    if isinstance(node, (int, float)) and not isinstance(node, bool):
+        return str(node)
+    return node
+
 def load(path):
     with open(path, encoding="utf-8") as f:
         m = yaml.safe_load(f)
+    if isinstance(m, dict):
+        m = _stringify(m)
     validate(m)
     m["style"] = {**DEFAULT_STYLE, **(m.get("style") or {})}
     return m
