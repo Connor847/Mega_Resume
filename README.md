@@ -62,6 +62,54 @@ main folder and paste a job posting. Building locally needs:
   - macOS: `brew install --cask libreoffice && brew install poppler`
   - Debian/Ubuntu: `sudo apt install libreoffice-writer poppler-utils`
 
+## Start from your existing resume
+
+If you already have a resume PDF, Mega-Res can turn it into `mega_resume.yaml` for you -
+just tell Claude "import my resume", or run:
+
+```bash
+PYTHONPATH=skill/mega-res python3 -m megares import my_resume.pdf ~/Applications
+```
+
+The import uses no AI: it reads each word's font, size and position and applies fixed rules.
+Before writing anything, it checks that every bullet, education line and skill it found
+appears word for word in your PDF, and that every line of the PDF was used. If either
+check fails, it writes nothing and tells you which lines it couldn't place. It never
+overwrites an existing `mega_resume.yaml`.
+
+It prints what it found (each job's organization, title, dates and bullet count). Skim that
+and the file: text is guaranteed verbatim, but which text became the *title* versus the
+*organization* is a rule-based judgment.
+
+### Importing a PDF - where it works
+
+Standard single-column resumes, as exported by Word, Google Docs, Pages, LaTeX or
+LibreOffice:
+- name at the top in the largest font, contact details below it separated by `|`, `•` or `·`
+- section headings in ALL CAPS (`EDUCATION`, `EXPERIENCE`, `WORK EXPERIENCE`,
+  `PROFESSIONAL EXPERIENCE`, `RESEARCH EXPERIENCE`, `PROJECTS`, `SKILLS`,
+  `TECHNICAL SKILLS`, ...)
+- each job as one or two heading lines - organization and title, in either order - with
+  location and dates pushed to the right margin
+- bullets starting with a bullet character (`●`, `•`, `▪`, `◦`, `-`, `–`, `*`, ...), wrapped
+  lines indented under them
+- skills as one comma-separated list, or one `Category: a, b, c` line per category
+
+### Importing a PDF - where it fails
+
+| Resume feature | What happens |
+|---|---|
+| Scanned or image-only PDF | Fails: "no text found". Export a text PDF from the original document, or run OCR first. |
+| Two-column or sidebar layouts | Fails the verbatim check, because the columns' lines interleave. Use a single-column version. |
+| Text in tables or text boxes | Usually fails the same way as two columns. |
+| Headings not in ALL CAPS (e.g. "Experience") | Not recognized as headings; fails with unused lines. |
+| Sections other than Education, Experience, Projects, Skills (e.g. Awards, Publications, Summary) | Skipped with a warning and reported as unused lines; nothing is written unless you pass `--allow-unused`. Add them by hand. |
+| Job titles with no common title word (e.g. "Quant", "Growth") listed *above* the organization | Organization and title come out swapped. Swap them back in the file. |
+| Dates on their own line instead of at the right margin | Imported as the job title or as an extra line. Fix by hand. |
+| Bullets with no bullet character (plain indented sentences) | Treated as headings and become separate entries. |
+| Skills split across categories without `Category:` labels | Merged into one comma-separated list. |
+| Paragraph summaries / objectives | Not supported by the format; skipped. |
+
 ## Write your mega resume
 
 Start from the template - Claude can do this for you, or run:

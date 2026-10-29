@@ -5,6 +5,7 @@ DEFAULT_STYLE = {
     "font": "Times New Roman", "body_size": 10, "name_size": 18, "section_size": 12,
     "margin_lr_in": 0.5, "margin_tb_in": 0.5, "bullet_indent_in": 0.375,
     "bullet_char": "●", "page_limit": 1,
+    "skills_layout": "inline",   # "inline": one comma-separated line; "lines": one item per line
 }
 
 class MasterError(Exception):

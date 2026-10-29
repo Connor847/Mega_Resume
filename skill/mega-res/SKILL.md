@@ -20,12 +20,20 @@ Run the tool as:
       mega_resume.yaml      <- the master (the user writes and edits it)
       Resume Outputs/       <- finished PDFs: "<Person Name>_<Company>_<Role>.pdf"
 
-If the folder has no `mega_resume.yaml`, offer to set it up with
-`python3 -m megares init "<main folder>"` (creates the folder structure and an example master
-the user then replaces with their own content).
+If the folder has no `mega_resume.yaml`:
+- If the user has a resume PDF (in the main folder, or attached), offer to import it:
+  `python3 -m megares import "<resume.pdf>" "<main folder>"`. The tool writes the master
+  itself after verifying every item against the PDF; you never write it. Show the user the
+  summary it prints (organizations, titles, dates, bullet counts) and any warnings or unused
+  lines, and ask them to skim the file. If it fails, explain the reason using the README's
+  "where it fails" table; do not hand-write a master to work around it.
+  In mode B, stage the PDF, run the import in the workspace with `--out`, then copy the
+  resulting file into the main folder with the file-commit tool (never over an existing one).
+- Otherwise offer `python3 -m megares init "<main folder>"` (folder structure plus an example
+  master the user replaces with their own content).
 
 ## Hard rules
-1. **The master is read-only to you.** Never create (except via `init`), edit, rewrite, reformat
+1. **The master is read-only to you.** Never create (except via `init` or `import`), edit, rewrite, reformat
    or retype `mega_resume.yaml`, even to fix a typo. Report problems in it to the user instead.
    Move it only as a byte-for-byte file copy (cp, or the file-staging tool), never by writing
    its contents yourself.

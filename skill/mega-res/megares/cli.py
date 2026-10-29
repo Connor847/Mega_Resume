@@ -1,6 +1,7 @@
 """mega-res command line. Run from anywhere with the skill folder on PYTHONPATH:
 
   PYTHONPATH=<skill dir> python -m megares init   MAIN_FOLDER
+  PYTHONPATH=<skill dir> python -m megares import RESUME.pdf MAIN_FOLDER
   PYTHONPATH=<skill dir> python -m megares check  MASTER
   PYTHONPATH=<skill dir> python -m megares build  MASTER SELECTION --outdir DIR
                                                   [--company C] [--role R] [--require-read-only]
@@ -45,6 +46,59 @@ def cmd_init(a):
         shutil.copy(os.path.join(HERE, "templates", "mega_resume.example.yaml"), master)
         print(f"CREATED: {master} (example content - replace with yours)")
     print(f"READY: {outputs}")
+
+ORDER = {"education": ["id", "school", "dates", "degree", "lines"],
+         "experience": ["id", "org", "location", "title", "dates", "bullets"],
+         "projects": ["id", "name", "dates", "bullets"]}
+
+def _ordered(data):
+    out = {"style": data["style"], "header": data["header"]}
+    for k, keys in ORDER.items():
+        out[k] = [{f: e[f] for f in keys if f in e} for e in data[k]]
+    out["skills"] = data["skills"]
+    return out
+
+IMPORT_NOTE = """# Imported from {src} by `megares import` (rule-based, no AI).
+# Every bullet, line and skill below was checked to appear word for word in that PDF.
+# Before relying on it, skim the structure: job titles vs. organizations, dates vs.
+# locations, and which section each item landed in. Then add tags, priority: must,
+# and any experience that wasn't on the PDF. Ids can be renamed as long as they stay unique.
+
+"""
+
+def cmd_import(a):
+    from . import importer as I
+    target = a.out if a.out else os.path.join(a.folder, MASTER_NAME)
+    if os.path.exists(target) and not a.force:
+        sys.exit(f"REFUSED: {target} already exists. Choose another --out, or pass --force to replace it.")
+    try:
+        data, lines, missed, warnings = I.parse(a.pdf)
+    except I.ImportError_ as e:
+        sys.exit(f"IMPORT FAILED: {e}")
+    errors = I.verify(a.pdf, data)
+    try:
+        M.validate(data)
+    except M.MasterError as e:
+        errors.append(str(e))
+    n_b = sum(len(e["bullets"]) for k in ("experience", "projects") for e in data[k])
+    print(f"NAME: {data['header']['name']}")
+    print(f"FOUND: {len(data['education'])} education, {len(data['experience'])} experience, "
+          f"{len(data['projects'])} projects, {n_b} bullets, {len(data['skills'])} skills")
+    for e in data["experience"]:
+        print(f"  - {e['org']} | {e.get('title', '')} | {e.get('dates', '')} | {len(e['bullets'])} bullets")
+    for w in warnings: print("WARNING: " + w)
+    for m in missed: print("UNUSED PDF LINE: " + m)
+    for e in errors: print("ERROR: " + e)
+    if errors or (missed and not a.allow_unused):
+        sys.exit("NOT WRITTEN: fix the problems above (see README: 'Importing a PDF - where it fails')")
+    os.makedirs(os.path.dirname(os.path.abspath(target)), exist_ok=True)
+    with open(target, "w", encoding="utf-8") as f:
+        f.write(IMPORT_NOTE.format(src=os.path.basename(a.pdf)))
+        yaml.safe_dump(_ordered(data), f, sort_keys=False, allow_unicode=True, width=10000)
+    M.load(target)
+    if a.folder:
+        os.makedirs(os.path.join(a.folder, OUTPUTS_NAME), exist_ok=True)
+    print(f"WROTE: {target}")
 
 def cmd_check(a):
     m = M.load(a.master)
@@ -104,6 +158,13 @@ def main():
     p = argparse.ArgumentParser(prog="megares")
     sub = p.add_subparsers(dest="cmd", required=True)
     i = sub.add_parser("init"); i.add_argument("folder"); i.set_defaults(fn=cmd_init)
+    im = sub.add_parser("import", help="convert a resume PDF into mega_resume.yaml")
+    im.add_argument("pdf"); im.add_argument("folder", nargs="?", default="",
+                                             help="main folder; writes <folder>/mega_resume.yaml")
+    im.add_argument("--out", help="write to this path instead")
+    im.add_argument("--force", action="store_true", help="replace an existing file")
+    im.add_argument("--allow-unused", action="store_true", help="write even if some PDF lines were not used")
+    im.set_defaults(fn=cmd_import)
     c = sub.add_parser("check"); c.add_argument("master"); c.set_defaults(fn=cmd_check)
     b = sub.add_parser("build")
     b.add_argument("master"); b.add_argument("selection")

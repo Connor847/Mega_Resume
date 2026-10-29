@@ -28,7 +28,7 @@ def check_docx(docx_path, master, content, bullet_char):
 
 def check_pdf(pdf_path, master, content, bullet_char):
     errors = []
-    raw = subprocess.run(["pdftotext", pdf_path, "-"], capture_output=True, text=True, check=True).stdout
+    raw = subprocess.run(["pdftotext", "-raw", pdf_path, "-"], capture_output=True, text=True, check=True).stdout
     flat = _squash(raw)
     items = [b["text"] for k in ("experience", "projects") for _, bl in content[k] for b in bl]
     items += [l["text"] for _, lines in content["education"] for l in lines]

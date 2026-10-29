@@ -93,7 +93,16 @@ class Renderer:
                 for b in bl: self._bullet(doc, b["text"])
         if content["skills"]:
             self._section(doc, "Technical Skills")
-            self._run(self._fmt(doc.add_paragraph()), ", ".join(content["skills"]))
+            if self.s.get("skills_layout") == "lines":
+                for item in content["skills"]:
+                    p = self._fmt(doc.add_paragraph())
+                    label, sep, rest = item.partition(":")
+                    if sep:
+                        self._run(p, label + ":", bold=True); self._run(p, rest)
+                    else:
+                        self._run(p, item)
+            else:
+                self._run(self._fmt(doc.add_paragraph()), ", ".join(content["skills"]))
         doc.save(path)
 
 def to_pdf(docx_path):
