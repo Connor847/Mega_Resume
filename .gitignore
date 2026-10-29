@@ -1,0 +1,5 @@
+my/
+*.private.yaml
+out/
+__pycache__/
+*.pyc

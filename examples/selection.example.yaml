@@ -1,0 +1,9 @@
+# Written by Claude (or you) for one job posting. Ids only - no text.
+education:
+  - {id: state-ms, lines: [state-ms-courses]}
+experience:                       # omitted entries are dropped; order bullets by relevance
+  - {id: acme, bullets: [acme-forecast, acme-pipeline, acme-ab]}
+  - {id: lab, bullets: [lab-cv]}
+projects:
+  - {id: sim, bullets: [sim-model]}
+skills: all                       # or an ordered list of exact skill strings from the master

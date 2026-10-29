@@ -1,0 +1,82 @@
+# Example master resume for a fictional person. Copy this file OUTSIDE the repo
+# (or into my/, which is git-ignored), replace the content with yours, then lock it:
+#   chmod a-w path/to/master.yaml
+#
+# Rules: every bullet has a unique id and is used verbatim. Tags are optional hints.
+# priority: must  -> the bullet (or entry) is required in every resume.
+
+style:                     # optional; these are the defaults
+  font: Times New Roman
+  body_size: 10
+  page_limit: 1
+
+header:
+  name: Jordan Rivera
+  contact:
+    - {text: "(555) 010-0000"}
+    - {text: "jordan@example.com", url: "mailto:jordan@example.com"}
+    - {text: "github.com/jordan-example", url: "https://github.com/jordan-example"}
+
+education:
+  - id: state-ms
+    school: State University, Springfield, IL
+    dates: Aug 2023 - May 2025
+    degree: Master of Science in Computer Science
+    lines:
+      - {id: state-ms-courses, text: "Relevant Courses: Machine Learning, Databases, Distributed Systems, Optimization"}
+      - {id: state-ms-ta, text: "Teaching Assistant: Introduction to Data Science"}
+
+experience:
+  - id: acme
+    org: Acme Analytics
+    location: Chicago, IL
+    title: Data Scientist
+    dates: Jun 2025 - Present
+    priority: must
+    bullets:
+      - id: acme-forecast
+        tags: [forecasting, time-series, python]
+        text: "Built a demand forecasting model in Python that reduced weekly inventory error by 18% across 40 stores"
+      - id: acme-pipeline
+        tags: [data-engineering, airflow, sql]
+        text: "Designed an Airflow pipeline ingesting 2M daily transactions into a warehouse with automated data-quality checks"
+      - id: acme-dashboard
+        tags: [communication, stakeholders, visualization]
+        text: "Presented weekly model results to operations leads through a self-serve dashboard used by 30+ managers"
+      - id: acme-ab
+        tags: [experimentation, statistics]
+        text: "Ran A/B tests on pricing changes and reported effect sizes with confidence intervals to leadership"
+
+  - id: lab
+    org: Applied ML Lab, State University
+    location: Springfield, IL
+    title: Graduate Research Assistant
+    dates: Sep 2023 - May 2025
+    bullets:
+      - id: lab-cv
+        tags: [computer-vision, pytorch, research]
+        text: "Trained a PyTorch segmentation model for satellite imagery, improving mean IoU from 0.61 to 0.72"
+      - id: lab-paper
+        tags: [research, publication]
+        text: "Co-authored a workshop paper on label-efficient segmentation"
+
+projects:
+  - id: chatbot
+    name: Course Q&A Assistant
+    bullets:
+      - id: chatbot-rag
+        tags: [llm, rag]
+        text: "Built a retrieval-augmented chatbot over 300 pages of course notes with citation of source passages"
+  - id: sim
+    name: Traffic Flow Simulator
+    bullets:
+      - id: sim-model
+        tags: [simulation, optimization, numpy]
+        text: "Wrote a NumPy cellular-automaton traffic simulator and tuned signal timing with Bayesian optimization"
+
+skills:
+  - "Python (NumPy, Pandas, PyTorch, Scikit-learn)"
+  - "SQL"
+  - "Airflow"
+  - "AWS"
+  - "Git"
