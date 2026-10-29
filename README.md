@@ -68,8 +68,7 @@ Claude will:
 - build drafts and add or remove bullets until the page is full but not over
 - save `Resume Outputs/<Your Name>_<Company>_<Role>.pdf`
 - tell you what it picked and why, the close calls it left out, and which requirements in
-  the posting none of your bullets cover. That last list is useful for a cover letter, or
-  for deciding which new bullets to write.
+  the posting none of your bullets cover
 
 ## Quick start (Claude Code)
 
