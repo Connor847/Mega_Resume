@@ -1,5 +1,8 @@
 my/
 *.private.yaml
-out/
+Resume Outputs/
+mega_resume.yaml
 __pycache__/
 *.pyc
+.pytest_cache/
+.DS_Store

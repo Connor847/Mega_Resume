@@ -1,52 +1,98 @@
 ---
 name: mega-res
-description: Tailor a one-page resume to a pasted job posting by selecting whole, verbatim bullets from the user's Mega-Res master resume. Use when asked to tailor a resume, match a resume to a job, or given a job posting to apply to.
+description: Tailor a one-page resume to a job posting by selecting whole, verbatim bullets from the user's mega_resume.yaml and saving the PDF to their Resume Outputs folder. Use when the user pastes a job posting, asks to tailor a resume, or mentions Mega-Res.
 ---
 
 # Mega-Res
 
-Builds a one-page .docx and .pdf for a job posting by choosing entries and bullets, by id,
-from the user's master resume. The Mega-Res tool renders the text straight from the master
-and verifies the output word for word, so wording never passes through you.
+Builds a one-page resume PDF for a job posting by choosing entries and bullets, **by id**, from
+the user's master resume. The bundled tool renders the text straight from the master and
+verifies the PDF word for word, so bullet wording never passes through you.
+
+This skill folder is self-contained. `SKILL_DIR` below means the folder this SKILL.md is in.
+Run the tool as:
+
+    PYTHONPATH="$SKILL_DIR" python3 -m megares <command> ...
+
+## The user's main folder
+
+    <main folder>/
+      mega_resume.yaml      <- the master (the user writes and edits it)
+      Resume Outputs/       <- finished PDFs: "<Person Name>_<Company>_<Role>.pdf"
+
+If the folder has no `mega_resume.yaml`, offer to set it up with
+`python3 -m megares init "<main folder>"` (creates the folder structure and an example master
+the user then replaces with their own content).
 
 ## Hard rules
-1. **The master is read-only to you.** Never create, edit, rewrite, reformat, copy or move the
-   master file, even to fix a typo. If you see an error in it, report it to the user.
-2. **Never write bullet text.** Your only output to the tool is a selection file of ids.
-3. **A build counts only if `VERBATIM CHECK: PASS`.** On FAIL, report it; do not work around it.
-4. Respect `priority: must` and the page limit; the tool enforces both.
+1. **The master is read-only to you.** Never create (except via `init`), edit, rewrite, reformat
+   or retype `mega_resume.yaml`, even to fix a typo. Report problems in it to the user instead.
+   Move it only as a byte-for-byte file copy (cp, or the file-staging tool), never by writing
+   its contents yourself.
+2. **Never write bullet text.** Your only input to the tool is a selection file of ids.
+3. **Save only builds that print `VERBATIM CHECK: PASS`** and fit the page limit; the tool
+   refuses to save anything else. On FAIL, report it; do not work around it.
+4. Only the final PDF goes in `Resume Outputs`. Drafts go to a scratch location via `--preview`.
 
-## Setup
-- Locate the Mega-Res repo (this skill lives in `skill/mega-res/` inside it) and install
-  `pip install -r requirements.txt`. LibreOffice (`soffice`) and poppler (`pdftotext`, `pdfinfo`,
-  `pdftoppm`) must be installed.
-- Ask the user for the master's path if you don't know it. Run
-  `python -m megares check <MASTER>` and report the SHA256 and whether it is read-only.
-  If it is writable, suggest `chmod a-w <MASTER>` to the user; do not run it yourself unless asked.
+## Step 0 - find where things run
+Pick the first that applies:
+
+**A. Local shell with the main folder** (Claude Code, or a shell on the user's computer that has
+Python, LibreOffice `soffice` and poppler `pdftotext`/`pdfinfo`):
+run everything in place. `MASTER="<main folder>/mega_resume.yaml"`,
+`OUTDIR="<main folder>/Resume Outputs"`.
+
+**B. Cloud workspace + the main folder connected from the user's computer** (rendering tools
+are missing on the computer, or there is no shell there):
+1. Stage `mega_resume.yaml` into the workspace with the file-staging tool (a byte copy).
+2. If a shell on the computer is available, run `shasum -a 256` on the original and compare it
+   with `python3 -m megares check` on the staged copy. They must match; if not, stop and report.
+3. Build in the workspace with `OUTDIR` = a local folder, then copy the finished PDF into the
+   connected folder's `Resume Outputs/` with the file-commit tool. Do not overwrite an existing
+   file with the same name; add " (2)" instead.
+
+**C. No folder connected:** ask the user to connect their main folder (preferred) or attach
+`mega_resume.yaml`. With an attachment, build in the workspace and send the PDF to the user;
+say that the check proves the PDF matches the attached copy.
+
+Install anything missing: `pip install -r "$SKILL_DIR/requirements.txt"` (add
+`--break-system-packages` if pip asks); LibreOffice and poppler from the system package manager.
 
 ## Workflow
-1. From the posting, extract required skills, preferred skills, domain, seniority and the 3-5
-   themes the role weighs most.
-2. Read the master in full. Score each bullet 0-3 (3 = direct evidence for a required
+1. Run `check` on the master. Note the person's name, SHA256 and bullet count.
+2. From the posting, extract company, role title, required skills, preferred skills, domain,
+   seniority and the 3-5 themes the role weighs most. If the company or role isn't in the
+   posting, ask once; if still unknown, omit it (the tool falls back to a dated name).
+3. Read the master in full. Score each bullet 0-3 (3 = direct evidence for a required
    skill/theme, 2 = preferred or adjacent, 1 = general strength, 0 = irrelevant). Judge on
-   substance; tags are hints, not the answer.
-3. Select:
-   - Keep recent entries and entries that prevent a visible gap, with at least one bullet.
-     Drop an entry only if it is both irrelevant and older or short.
+   substance; tags are hints.
+4. Select:
+   - Keep recent entries and entries that prevent a visible timeline gap, with at least one
+     bullet. Drop an entry only if it is both irrelevant and older or short.
    - Recent or highly relevant roles: 2-5 bullets; others: 1-2. Projects only if they score >= 2.
    - Order bullets within an entry by score. Keep entries in the master's order.
    - Education lines when relevant. Skills `all`, or an ordered subset of exact strings.
-4. Write `selection.yaml` in a working folder outside the master's folder
-   (format: `examples/selection.example.yaml`). Then run:
-   `python -m megares build <MASTER> selection.yaml out/<Name>_Resume_<Company>_<Role> --require-read-only`
-   (drop `--require-read-only` only if the user declined to lock the master).
-5. Iterate on the report:
+   - Include everything marked `priority: must`.
+5. Write `selection.yaml` in a scratch folder - never in the main folder
+   (format: `$SKILL_DIR/templates/selection.example.yaml`).
+6. Draft builds (nothing saved to Resume Outputs):
+
+       python3 -m megares build "$MASTER" selection.yaml --company "<Company>" --role "<Role>" --preview draft.pdf
+
    - `OVERFLOW`: remove the lowest-scoring bullet, rebuild.
    - `ROOM`: add the highest-scoring unused bullet, rebuild; stop before it would overflow.
-6. Render the PDF to PNG (`pdftoppm -r 80 -png`) and look at it.
-7. Deliver the .docx and .pdf with a short report:
+7. Look at the draft (`pdftoppm -r 80 -png draft.pdf draft`) to confirm the layout.
+8. Final build, same command with `--outdir "$OUTDIR"` instead of `--preview` (in mode B,
+   then copy the PDF into the user's `Resume Outputs`).
+9. Report briefly:
+   - the saved file name and where it is
    - selected bullet ids per entry, with the reason for the strongest picks
    - close calls left out
-   - posting requirements no master bullet covers (cover-letter material, or new bullets
-     the user may want to write into the master themselves)
-   - the master SHA256 and the verbatim-check result
+   - posting requirements no bullet covers (cover-letter material, or bullets the user may
+     want to add to the master themselves)
+   - the verbatim-check result and the master SHA256
+
+## Master file format
+See `$SKILL_DIR/templates/mega_resume.example.yaml`. Every bullet has a unique `id` and verbatim
+`text`; `tags` are optional; `priority: must` forces an entry or bullet in. An optional `style:`
+block sets font, sizes, margins and page limit.
